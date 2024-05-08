@@ -1,0 +1,204 @@
+﻿<HTML>
+
+<HEAD>
+    <META NAME="GENERATOR" Content="Microsoft Visual Studio">
+    <TITLE></TITLE>
+</HEAD>
+<style>
+    html,
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .topBorder {
+        z-index: 999999;
+        position: absolute;
+        top: 0px;
+        height: 6px;
+        left: 0px;
+        right: 0px;
+        display: flex;
+    }
+
+    .topBorderLeft {
+        width: 6px;
+        height: 6px;
+        cursor: nwse-resize;
+    }
+
+    .topBorderCenter {
+        flex: 1;
+        height: 6px;
+        cursor: ns-resize;
+    }
+
+    .topBorderRight {
+        width: 6px;
+        height: 6px;
+        cursor: nesw-resize;
+    }
+
+    .leftBorder {
+        z-index: 999999;
+        position: absolute;
+        top: 6px;
+        bottom: 6px;
+        left: 0px;
+        width: 6px;
+        cursor: ew-resize;
+    }
+
+    .rightBorder {
+        z-index: 999999;
+        position: absolute;
+        top: 6px;
+        bottom: 6px;
+        right: 0px;
+        width: 6px;
+        cursor: ew-resize;
+    }
+
+    .bottomBorder {
+        z-index: 999999;
+        position: absolute;
+        bottom: 0px;
+        height: 6px;
+        left: 0px;
+        right: 0px;
+        display: flex;
+    }
+
+    .bottomBorderLeft {
+        width: 6px;
+        height: 6px;
+        cursor: nesw-resize;
+    }
+
+    .bottomBorderCenter {
+        flex: 1;
+        height: 6px;
+        cursor: ns-resize;
+    }
+
+    .bottomBorderRight {
+        width: 6px;
+        height: 6px;
+        cursor: nwse-resize;
+    }
+
+    .titleBar {
+        height: 40px;
+        background: lightskyblue;
+        display:flex;
+    }
+    .titleArea{
+        flex:1;
+    }
+    .windowBtnBox{
+        width:120px;
+        display:flex;
+    }
+    .windowBtn{
+        flex:1;
+        text-align:center;
+        line-height:40px;
+        cursor:pointer;
+    }
+    .windowBtn:hover{
+        background:#ff6a00;
+        color:#fff;
+    }
+</style>
+
+<BODY>
+    <div class="topBorder">
+        <div class="topBorderLeft"></div>
+        <div class="topBorderCenter"></div>
+        <div class="topBorderRight"></div>
+    </div>
+    <div class="leftBorder"></div>
+    <div class="rightBorder"></div>
+    <div class="bottomBorder">
+        <div class="bottomBorderLeft"></div>
+        <div class="bottomBorderCenter"></div>
+        <div class="bottomBorderRight"></div>
+    </div>
+    <div class="titleBar">
+        <div class="titleArea"></div>
+        <div class="windowBtnBox">
+            <div class="windowBtn"></div>
+            <div class="windowBtn"></div>
+            <div id="closeBtn" class="windowBtn">X</div>
+        </div>
+    </div>
+    测试测试测试
+    <script>
+        (() => {
+            window.chrome.webview.addEventListener("message", (e) => {
+                console.log(e);
+            })
+            let hitTest = (e, val) => {
+                e.preventDefault();
+                e.stopPropagation();
+                chrome.webview.hostObjects.sync.host.HitTest(val);
+            }
+            let leftTop = document.querySelector(".topBorderLeft");
+            leftTop.addEventListener("mousedown", (e) => {
+                hitTest(e, 13);
+            })
+            let topBorderLeft = document.querySelector(".topBorderCenter");
+            topBorderLeft.addEventListener("mousedown", (e) => {
+                hitTest(e, 12);
+            })
+            let topBorderRight = document.querySelector(".topBorderRight");
+            topBorderRight.addEventListener("mousedown", (e) => {
+                hitTest(e, 14);
+            })
+            let leftBorder = document.querySelector(".leftBorder");
+            leftBorder.addEventListener("mousedown", (e) => {
+                hitTest(e, 10);
+            })
+            let rightBorder = document.querySelector(".rightBorder");
+            rightBorder.addEventListener("mousedown", (e) => {
+                hitTest(e, 11);
+            })
+            let bottomBorderLeft = document.querySelector(".bottomBorderLeft");
+            bottomBorderLeft.addEventListener("mousedown", (e) => {
+                hitTest(e, 16);
+            })
+            let bottomBorderCenter = document.querySelector(".bottomBorderCenter");
+            bottomBorderCenter.addEventListener("mousedown", (e) => {
+                hitTest(e, 15);
+            })
+            let bottomBorderRight = document.querySelector(".bottomBorderRight");
+            bottomBorderRight.addEventListener("mousedown", (e) => {
+                hitTest(e, 17);
+            })
+            let titleBar = document.querySelector(".titleBar");
+            titleBar.addEventListener("mousedown", (e) => {
+                hitTest(e, 2);
+            })
+let closeBtn = document.getElementById("closeBtn");
+closeBtn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    chrome.webview.hostObjects.sync.host.CloseWindow();
+})
+
+
+            // let domTitle  = document.querySelector(".title");
+            // domTitle.addEventListener("mousedown",(evt)=>{
+            //     chrome.webview.hostObjects.sync.host.MouseDownDrag();
+            //     evt.preventDefault();
+            //     evt.stopPropagation();
+            // })
+            //window.chrome.webview.postMessage({ name :1234 })
+
+        })()
+    </script>
+</BODY>
+
+</HTML>
