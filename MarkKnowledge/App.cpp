@@ -30,7 +30,12 @@ App::App()
 	}
 	regScheme();
 	auto envCBInstance = Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(this, &App::envCallBack);
-	HRESULT result = CreateCoreWebView2EnvironmentWithOptions(nullptr, appPath.c_str(), nullptr/*options.Get()*/, envCBInstance.Get());
+
+	std::wstring args{ L"--enable-features=msWebView2EnableDraggableRegions" };
+	auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+	options->put_AdditionalBrowserArguments(args.c_str());
+
+	HRESULT result = CreateCoreWebView2EnvironmentWithOptions(nullptr, appPath.c_str(), options.Get(), envCBInstance.Get());
 	if (FAILED(result)) {
 		return;
 	}

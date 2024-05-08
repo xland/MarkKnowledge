@@ -1,0 +1,25 @@
+.TitleBar {
+  height: 38px;
+  line-height: 38px;
+  display: flex;
+  background: gray;
+  .TitleLabel {
+    margin-top: 6px;
+    app-region: drag;
+    height: 32px;
+    line-height: 26px;
+    flex: 1;
+  }
+  .WindowToolBox {
+    width: 120px;
+    display: flex;
+    .WindowToolBtn {
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        background: blueviolet;
+      }
+    }
+  }
+}

@@ -59,20 +59,6 @@ void Win::initWindow()
     DwmExtendFrameIntoClientArea(hwnd, &margins);
 }
 
-//void Win::initCaptionArea()
-//{
-//    SetRectRgn(rgn, 0, 0, 0, 0);
-//    rapidjson::Value& areas = config["captionAreas"];
-//    for (size_t i = 0; i < areas.Size(); i++)
-//    {
-//        auto rect = areaToRect(areas[i], w, h);
-//        HRGN hRectRgn = CreateRectRgnIndirect(&rect);
-//        auto appendType = areas[i]["isAppend"].GetBool() ? RGN_OR: RGN_DIFF;
-//        CombineRgn(rgn, rgn, hRectRgn, appendType);
-//        DeleteObject(hRectRgn);
-//    }
-//}
-
 LRESULT CALLBACK Win::RouteWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     if (msg == WM_NCCREATE)
     {
@@ -200,14 +186,13 @@ HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controlle
 
     //std::wstring script = L"console.log(123);window.chrome.webview.postMessage({\"name\":123 });console.log(456);";
     //hr = webview->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
-
-
-    hr = webview->Navigate(L"https://wv2js/index.html");
+#ifdef DEBUG
+    auto url = L"http://localhost:4321/index.html";
+#else
+    auto url = L"https://wv2js/index.html";
+#endif
+    hr = webview->Navigate(url);
     webview->OpenDevToolsWindow();
-
-    //EnumChildWindows(hwnd, EnumChildProc, NULL);
-    
-
     return hr;    
 }
 
