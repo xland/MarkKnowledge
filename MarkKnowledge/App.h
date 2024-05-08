@@ -19,7 +19,6 @@ public:
 	static std::wstring getAppPath();
 private:
 	App();
-	void initConfig();
 	void regScheme();
 	bool checkRuntime();
 	bool checkRegKey(const HKEY& key, const std::wstring& subKey);

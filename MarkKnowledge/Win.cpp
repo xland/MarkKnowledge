@@ -8,7 +8,7 @@
 
 using namespace Microsoft::WRL;
 
-Win::Win(rapidjson::Value& config):config{config}
+Win::Win()
 {
     initSizeAndPos();
     initWindow();
@@ -17,32 +17,19 @@ Win::Win(rapidjson::Value& config):config{config}
 
 Win::~Win()
 {
-    for (size_t i = 0; i < webviews.size(); i++)
-    {
-        webviews[i]->Release();
-    }
-    for (size_t i = 0; i < ctrls.size(); i++)
-    {
-        ctrls[i]->Release();
-    }
+    webview->Release();
+    ctrl->Release();
 }
 
 
 void Win::initSizeAndPos()
 {
-    w = config["w"].GetInt();
-    h = config["h"].GetInt();
-    auto centerOfScreen = config["position"]["centerOfScreen"].GetBool();
-    if (centerOfScreen) {
-        RECT rect;
-        SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
-        x = (rect.right - w) / 2;
-        y = (rect.bottom - h) / 2;
-    }
-    else {
-        x = config["position"]["x"].GetInt();
-        y = config["position"]["y"].GetInt();
-    }
+    w = 1200;
+    h = 800;
+    RECT rect;
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+    x = (rect.right - w) / 2;
+    y = (rect.bottom - h) / 2;
 }
 void Win::initWindow()
 {
@@ -64,20 +51,12 @@ void Win::initWindow()
         MessageBox(NULL, L"注册窗口类失败", L"系统提示", NULL);
         return;
     }
-    auto title = convertToWideChar(config["title"].GetString());
-    hwnd = CreateWindowEx(NULL, wcx.lpszClassName, title.c_str(), WS_VISIBLE | WS_OVERLAPPEDWINDOW| WS_CLIPCHILDREN,
+    hwnd = CreateWindowEx(NULL, wcx.lpszClassName, L"MarkKnowledge", WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
         x, y, w, h, NULL, NULL, hinstance, static_cast<LPVOID>(this));
-    if (!config["frame"].GetBool()) {
-        //rgn = CreateRectRgn(0, 0, 0, 0);
-        //initCaptionArea();
-        if (config["shadow"].GetBool()) {
-            DWMNCRENDERINGPOLICY policy = DWMNCRP_ENABLED;
-            DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &policy, sizeof(policy));
-            MARGINS margins = { 1,1,1,1 };
-            DwmExtendFrameIntoClientArea(hwnd, &margins);
-        }
-    }
-
+    DWMNCRENDERINGPOLICY policy = DWMNCRP_ENABLED;
+    DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &policy, sizeof(policy));
+    MARGINS margins = { 1,1,1,1 };
+    DwmExtendFrameIntoClientArea(hwnd, &margins);
 }
 
 //void Win::initCaptionArea()
@@ -115,31 +94,21 @@ LRESULT CALLBACK Win::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_NCCALCSIZE:
     {
-        if (config["frame"].GetBool()) {
-            return DefWindowProcW(hWnd, msg, wParam, lParam);
-        }
         return 0;
     }
     case WM_GETMINMAXINFO:
     {
-        if (config["frame"].GetBool()) {
-            return DefWindowProcW(hWnd, msg, wParam, lParam);
-        }
-        else
-        {
-            MINMAXINFO* mminfo = (PMINMAXINFO)lParam;
-            RECT workArea;
-            SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-            mminfo->ptMinTrackSize.x = 1200;
-            mminfo->ptMinTrackSize.y = 800;
-            mminfo->ptMaxSize.x = workArea.right - workArea.left - 2;
-            mminfo->ptMaxSize.y = workArea.bottom - workArea.top - 2;
-            mminfo->ptMaxPosition.x = 1;
-            mminfo->ptMaxPosition.y = 1;
-        }
+        MINMAXINFO* mminfo = (PMINMAXINFO)lParam;
+        RECT workArea;
+        SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+        mminfo->ptMinTrackSize.x = 1200;
+        mminfo->ptMinTrackSize.y = 800;
+        mminfo->ptMaxSize.x = workArea.right - workArea.left - 2;
+        mminfo->ptMaxSize.y = workArea.bottom - workArea.top - 2;
+        mminfo->ptMaxPosition.x = 1;
+        mminfo->ptMaxPosition.y = 1;
         return 0;
     }
-
     case WM_EXITSIZEMOVE: {
         RECT rect;
         GetWindowRect(hWnd, &rect);
@@ -150,12 +119,9 @@ LRESULT CALLBACK Win::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE: {
         this->w = LOWORD(lParam);
         this->h = HIWORD(lParam);
-        rapidjson::Value& wvs = config["webviews"].GetArray();
-        for (size_t i = 0; i < ctrls.size(); i++)
-        {            
-            auto rect = areaToRect(wvs[i]["area"], w, h);
-            ctrls[i]->SetBoundsAndZoomFactor(rect, 1.0);
-            
+        if (ctrl) {
+            RECT rect{ .left{0},.top{0},.right{w},.bottom{h} };
+            ctrl->SetBoundsAndZoomFactor(rect, 1.0);
         }
         return 0;
     }
@@ -169,15 +135,11 @@ LRESULT CALLBACK Win::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 bool Win::createPageController()
 {
-    rapidjson::Value& wvs = config["webviews"].GetArray();
     auto env = App::getWebViewEnv();
     auto callBackInstance = Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(this, &Win::pageCtrlCallBack);
-    for (size_t i = 0; i < wvs.Size(); i++)
-    {
-        auto result = env->CreateCoreWebView2Controller(hwnd, callBackInstance.Get());
-        if (FAILED(result)) {
-            return false;
-        }
+    auto result = env->CreateCoreWebView2Controller(hwnd, callBackInstance.Get());
+    if (FAILED(result)) {
+        return false;
     }
     return true;
 }
@@ -200,28 +162,18 @@ BOOL CALLBACK EnumChildProc(HWND hwndChild, LPARAM lParam) {
 HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controller)
 {
     HRESULT hr;
-
-    wil::com_ptr<ICoreWebView2> webview;
     hr = controller->get_CoreWebView2(&webview);
-    webviews.push_back(webview);
     wil::com_ptr<ICoreWebView2Settings> settings;
     webview->get_Settings(&settings);
     settings->put_IsScriptEnabled(TRUE);
     settings->put_AreDefaultScriptDialogsEnabled(TRUE);
     settings->put_IsWebMessageEnabled(TRUE);
-
-
-    rapidjson::Value& wvs = config["webviews"].GetArray();
-    auto index = ctrls.size();
-    auto rect = areaToRect(wvs[index]["area"], w, h);
+    RECT rect{ .left{0},.top{0},.right{w},.bottom{h} };
     hr = controller->put_Bounds(rect);
-    ctrls.push_back(controller);
+    ctrl = controller;
 
-    auto url = convertToWideChar(wvs[index]["url"].GetString());
-    if (url.starts_with(L"https://wv2js/")) {
-        auto webview3 = webview.try_query<ICoreWebView2_3>();
-        webview3->SetVirtualHostNameToFolderMapping(L"wv2js", L"ui", COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
-    }
+    auto webview3 = webview.try_query<ICoreWebView2_3>();
+    webview3->SetVirtualHostNameToFolderMapping(L"wv2js", L"ui", COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
     hostObj = Microsoft::WRL::Make<Host>(this);
     VARIANT remoteObjectAsVariant = {};
@@ -250,7 +202,7 @@ HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controlle
     //hr = webview->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
 
-    hr = webview->Navigate(url.c_str());
+    hr = webview->Navigate(L"https://wv2js/index.html");
     webview->OpenDevToolsWindow();
 
     //EnumChildWindows(hwnd, EnumChildProc, NULL);

@@ -15,7 +15,6 @@ using namespace Microsoft::WRL;
 
 namespace {
 	static App* app;
-	static rapidjson::Document d;
 	static std::vector<Win*> wins;
 	static 	std::filesystem::path appPath;
 	static ICoreWebView2Environment* webViewEnv;
@@ -23,7 +22,6 @@ namespace {
 
 App::App()
 {
-	initConfig();
 	if (!checkRuntime()) {
 		return;
 	}
@@ -66,16 +64,6 @@ ICoreWebView2Environment* App::getWebViewEnv()
 std::wstring App::getAppPath()
 {
 	return appPath.wstring();
-}
-
-
-void App::initConfig()
-{
-	//auto configPath = std::filesystem::canonical(std::filesystem::current_path() / "config.json");
-	std::ifstream file("config.json");
-	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	//auto str = convertToWideChar(content);
-	d.Parse(content.c_str());
 }
 
 void App::regScheme()
@@ -144,7 +132,7 @@ bool App::ensureAppFolder() {
 	}
 	appPath = pathTmp;
 	CoTaskMemFree(pathTmp);
-	appPath /= convertToWideChar(d["appName"].GetString());
+	appPath /= L"MarkKnowledge";
 	if (!std::filesystem::exists(appPath)) {
 		auto flag = std::filesystem::create_directory(appPath);
 		if (!flag) {
@@ -159,10 +147,6 @@ bool App::ensureAppFolder() {
 HRESULT App::envCallBack(HRESULT result, ICoreWebView2Environment* env)
 {
 	webViewEnv = env;
-	rapidjson::Value& winConfigs = d["windows"].GetArray();
-	for (size_t i = 0; i < winConfigs.Size(); i++)
-	{
-		wins.push_back(new Win(winConfigs[i]));
-	}
+	wins.push_back(new Win());
 	return S_OK;
 }

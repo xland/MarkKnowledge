@@ -60,7 +60,6 @@
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="config.json" />
     <CopyFileToFolders Include="ui\index.html" />
   </ItemGroup>
 </Project>
