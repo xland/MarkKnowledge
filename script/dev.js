@@ -1,4 +1,4 @@
-let fs = require("fs").promises;
+let fs = require("fs-extra");
 let esbuild = require("esbuild");
 let { sassPlugin } = require("esbuild-sass-plugin");
 let serverUrl;
@@ -25,6 +25,7 @@ let buildMain = async () => {
   });
 };
 let startDevServer = async () => {
+  await fs.copy("./res/", "./dist/dev/");
   let entry = "index";
   let content = getTemplate(entry);
   await fs.writeFile(`./dist/dev/${entry}.html`, content);
