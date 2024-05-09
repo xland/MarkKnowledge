@@ -188,11 +188,12 @@ HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controlle
     //hr = webview->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 #ifdef DEBUG
     auto url = L"http://localhost:4321/index.html";
-#else
-    auto url = L"https://wv2js/index.html";
-#endif
     hr = webview->Navigate(url);
     webview->OpenDevToolsWindow();
+#else
+    auto url = L"https://wv2js/index.html";
+    hr = webview->Navigate(url);
+#endif
     return hr;    
 }
 

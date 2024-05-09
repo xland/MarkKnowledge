@@ -5,6 +5,7 @@ let { sassPlugin } = require("esbuild-sass-plugin");
 let getTemplate = (entry) => `<html>
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link rel="stylesheet" href="./res/iconfont.css">
   <link rel="stylesheet" href="./${entry}.css">
 </head>
 <body>
