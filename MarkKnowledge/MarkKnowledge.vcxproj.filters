@@ -33,8 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="ui\prod\index.html" />
-    <None Include="ui\prod\index.css" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -60,13 +58,5 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="ui\index.html" />
-    <CopyFileToFolders Include="ui\prod\index.js" />
-    <CopyFileToFolders Include="ui\prod\res\iconfont.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="ui\prod\res\iconfont.ttf" />
   </ItemGroup>
 </Project>

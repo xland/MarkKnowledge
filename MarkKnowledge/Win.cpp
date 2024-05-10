@@ -156,10 +156,7 @@ HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controlle
     settings->put_IsWebMessageEnabled(TRUE);
     RECT rect{ .left{0},.top{0},.right{w},.bottom{h} };
     hr = controller->put_Bounds(rect);
-    ctrl = controller;
-
-    auto webview3 = webview.try_query<ICoreWebView2_3>();
-    webview3->SetVirtualHostNameToFolderMapping(L"wv2js", L"ui", COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+    ctrl = controller;    
 
     hostObj = Microsoft::WRL::Make<Host>(this);
     VARIANT remoteObjectAsVariant = {};
@@ -191,6 +188,8 @@ HRESULT Win::pageCtrlCallBack(HRESULT result, ICoreWebView2Controller* controlle
     hr = webview->Navigate(url);
     webview->OpenDevToolsWindow();
 #else
+    auto webview3 = webview.try_query<ICoreWebView2_3>();
+    webview3->SetVirtualHostNameToFolderMapping(L"wv2js", L"D:\\project\\MarkKnowledge\\MarkKnowledge\\ui\\prod", COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
     auto url = L"https://wv2js/index.html";
     hr = webview->Navigate(url);
 #endif

@@ -146,25 +146,6 @@
     <ClCompile Include="Win.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <CopyFileToFolders Include="ui\index.html">
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)ui</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="ui\prod\index.css">
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="ui\prod\index.html">
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="ui\prod\index.js">
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="ui\prod\res\iconfont.css">
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui\res</DestinationFolders>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="HostImpl.h" />
     <ClInclude Include="stdafx.h" />
@@ -173,12 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="Host.idl" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="ui\prod\res\iconfont.ttf">
-      <FileType>Document</FileType>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)ui\res</DestinationFolders>
-    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

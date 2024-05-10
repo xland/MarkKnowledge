@@ -6,7 +6,7 @@ let getTemplate = (
 ) => `<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"><link rel="stylesheet" href="./${entry}.css"><link rel="stylesheet" href="./res/iconfont.css"></head>
 <body><script src="./${entry}.js"></script></body></html>`;
 let build = async () => {
-  let entry = "index";
+  let entry = "Index";
   let content = getTemplate(entry);
   await fs.writeFile(`./prod/${entry}.html`, content);
   await esbuild.build({
