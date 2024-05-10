@@ -33,7 +33,7 @@ let createElement = (tag: any, attr: any, ...children: any[]): any => {
     return node;
   } else if (typeof tag === "function") {
     return tag({ ...attr, children });
-  } else console.log("jsx error", tag, attr, children);
+  }
 };
 let Fragment = (attr: any) => {
   const fragment = document.createDocumentFragment();

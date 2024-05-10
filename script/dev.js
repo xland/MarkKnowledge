@@ -25,9 +25,10 @@ let buildMain = async () => {
   });
 };
 let startDevServer = async () => {
-  await fs.copy("./res/", "./dist/dev/");
+  await fs.copy("./res/", "./dist/dev/res");
   let entry = "index";
   let content = getTemplate(entry);
+  fs.copy("./res", "./dist/dev");
   await fs.writeFile(`./dist/dev/${entry}.html`, content);
   let ctx = await esbuild.context({
     entryPoints: [`./src/render/${entry}.tsx`],

@@ -1,10 +1,13 @@
+import React from "./React";
 import { eventer } from "../common/eventer";
 import "./index.scss";
-import React from "./React";
+import TitleBar from "./TitleBar";
+import ContentBox from "./ContentBox";
 let App = () => {
     return (
         <>
-            <div>allen</div>
+            <TitleBar></TitleBar>
+            <ContentBox></ContentBox>
         </>
     );
 };
@@ -12,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.ondragstart = () => false;
     document.body.ondragend = () => false;
     document.body.ondrop = () => false;
+    document.body.setAttribute("class", "blue");
     document.body.appendChild(<App />);
     eventer.emit("dataReady");
     let { ipcRenderer } = require("electron");

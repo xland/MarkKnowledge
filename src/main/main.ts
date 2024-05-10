@@ -88,14 +88,13 @@ class Main {
   }
   createMainWindow() {
     let options = this.getWinOptions();
-    options.title = "日历";
-    options.minHeight = 800;
-    options.minWidth = 1100;
+    options.title = "MarkKnowledge";
+    options.minHeight = 600;
+    options.minWidth = 800;
     // fs.appendFileSync(path.join(app.getPath("userData"), "log.txt"),"start create window /n")
     this.win = new BrowserWindow(options);
     let serverUrl = process.argv[2];
     if (serverUrl && !app.isPackaged) {
-      console.log("electron:", serverUrl);
       this.win.loadURL(serverUrl);
     } else {
       this.win.loadURL(`lun://./Index.html`);
