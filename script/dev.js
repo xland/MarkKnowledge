@@ -6,6 +6,11 @@ let getTemplate = (entry) => `<html>
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <link rel="stylesheet" href="./res/iconfont.css">
+  <link href="./res/markdown/cherry-markdown.min.css" />
+  <script src="./res/markdown/cherry-markdown.min.js"></script>
+  <script src="./res/markdown/addons/cherry-code-block-plantuml-plugin.js"></script>
+  <script src="./res/markdown/addons/cherry-code-block-mermaid-plugin.js"></script>
+  <script src="./res/markdown/addons/advance/cherry-table-echarts-plugin.js"></script>
   <link rel="stylesheet" href="./${entry}.css">
 </head>
 <body>
